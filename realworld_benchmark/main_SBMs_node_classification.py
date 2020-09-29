@@ -41,7 +41,6 @@ from train.train_SBMs_node_classification import train_epoch_sparse as train_epo
     GPU Setup
 """
 
-
 def gpu_setup(use_gpu, gpu_id):
     os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
@@ -59,14 +58,11 @@ def gpu_setup(use_gpu, gpu_id):
     VIEWING MODEL CONFIG AND PARAMS
 """
 
-
 def view_model_param(net_params):
     model = EIGNet(net_params)
     total_param = 0
     print("MODEL DETAILS:\n")
-    # print(model)
     for param in model.parameters():
-        # print(param.data.size())
         total_param += np.prod(list(param.data.size()))
     print('MODEL/Total parameters:', total_param)
     return total_param
@@ -76,23 +72,11 @@ def view_model_param(net_params):
     TRAINING CODE
 """
 
-
 def train_val_pipeline(MODEL_NAME, dataset, params, net_params):
     start0 = time.time()
     per_epoch_time = []
 
     DATASET_NAME = dataset.name
-
-    if MODEL_NAME in ['GCN', 'GAT']:
-        if net_params['self_loop']:
-            print("[!] Adding graph self-loops for GCN/GAT models (central node trick).")
-            dataset._add_self_loops()
-
-    if MODEL_NAME in ['GatedGCN']:
-        if net_params['pos_enc']:
-            print("[!] Adding graph positional encoding.")
-            dataset._add_positional_encodings(net_params['pos_enc_dim'])
-            print('Time PE:', time.time() - start0)
 
     trainset, valset, testset = dataset.train, dataset.val, dataset.test
 

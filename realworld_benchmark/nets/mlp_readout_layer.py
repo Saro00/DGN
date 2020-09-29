@@ -10,7 +10,6 @@ import torch.nn.functional as F
     MLP Layer used after graph vector representation
 """
 
-
 class MLPReadout(nn.Module):
 
     def __init__(self, input_dim, output_dim, L=2):  # L=nb_hidden_layers

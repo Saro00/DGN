@@ -20,7 +20,7 @@ def train_epoch_sparse(model, optimizer, device, data_loader, epoch):
     nb_data = 0
     gpu_mem = 0
     for iter, (batch_graphs, batch_labels, batch_snorm_n, batch_snorm_e) in enumerate(data_loader):
-        batch_x = batch_graphs.ndata['feat'].to(device)  # num x feat
+        batch_x = batch_graphs.ndata['feat'].to(device)
         batch_e = batch_graphs.edata['feat'].to(device)
         batch_snorm_e = batch_snorm_e.to(device)
         batch_snorm_n = batch_snorm_n.to(device)

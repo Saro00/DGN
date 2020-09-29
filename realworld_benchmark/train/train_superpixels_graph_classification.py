@@ -20,11 +20,11 @@ def train_epoch(model, optimizer, device, data_loader, epoch, augmentation, flip
     nb_data = 0
     gpu_mem = 0
     for iter, (batch_graphs, batch_labels, batch_snorm_n, batch_snorm_e) in enumerate(data_loader):
-        batch_x = batch_graphs.ndata['feat'].to(device)  # num x feat
+        batch_x = batch_graphs.ndata['feat'].to(device)
         batch_e = batch_graphs.edata['feat'].to(device)
         batch_snorm_e = batch_snorm_e.to(device)
         batch_labels = batch_labels.to(device)
-        batch_snorm_n = batch_snorm_n.to(device) # num x 1
+        batch_snorm_n = batch_snorm_n.to(device)
 
         if augmentation > 1e-7:
             batch_graphs_eig = batch_graphs.ndata['eig'].clone()
@@ -36,7 +36,7 @@ def train_epoch(model, optimizer, device, data_loader, epoch, augmentation, flip
             batch_graphs.ndata['eig'][:, 2] = torch.mul((1 - sine**2) ** (0.5), batch_graphs_eig[:, 2]) \
                                               - torch.mul(sine, batch_graphs_eig[:, 1])
         if flip:
-            batch_graphs_eig = batch_graphs.ndata['eig'][:, 2].to(device)  #check 1 is x-axis
+            batch_graphs_eig = batch_graphs.ndata['eig'][:, 2].to(device)
             sign_flip = torch.rand(batch_graphs_eig.size()).to(device)
             sign_flip[sign_flip >= 0.5] = 1.0; sign_flip[sign_flip < 0.5] = -1.0
             batch_graphs.ndata['eig'][:, 2] = torch.mul(sign_flip, batch_graphs_eig)

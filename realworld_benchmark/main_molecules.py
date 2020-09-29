@@ -33,7 +33,6 @@ from train.train_molecules_graph_regression import train_epoch, evaluate_network
     GPU Setup
 """
 
-
 def gpu_setup(use_gpu, gpu_id):
     os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
@@ -51,14 +50,11 @@ def gpu_setup(use_gpu, gpu_id):
     VIEWING MODEL CONFIG AND PARAMS
 """
 
-
 def view_model_param(net_params):
     model = EIGNet(net_params)
     total_param = 0
     print("MODEL DETAILS:\n")
-    # print(model)
     for param in model.parameters():
-        # print(param.data.size())
         total_param += np.prod(list(param.data.size()))
     print('EIG Total parameters:', total_param)
     return total_param
@@ -74,7 +70,6 @@ def train_val_pipeline(dataset, params, net_params):
     per_epoch_time = []
 
     DATASET_NAME = dataset.name
-    MODEL_NAME = 'EIG'
 
     trainset, valset, testset = dataset.train, dataset.val, dataset.test
 
@@ -114,10 +109,6 @@ def train_val_pipeline(dataset, params, net_params):
         with tqdm(range(start_epoch, params['epochs']), mininterval=params['print_epoch_interval'],
                   maxinterval=None, unit='epoch', initial=start_epoch, total=params['epochs']) as t:
             for epoch in t:
-                if epoch == -1:
-                    #reset params of eig_attn
-                    model.reset_params()
-
 
                 t.set_description('Epoch %d' % epoch)
 

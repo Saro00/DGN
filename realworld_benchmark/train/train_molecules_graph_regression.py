@@ -13,6 +13,7 @@ import math
 from .metrics import MAE
 
 def train_epoch(model, optimizer, device, data_loader, epoch, flip):
+
     model.train()
     epoch_loss = 0
     epoch_train_mae = 0
@@ -20,11 +21,11 @@ def train_epoch(model, optimizer, device, data_loader, epoch, flip):
     gpu_mem = 0
     for iter, (batch_graphs, batch_targets, batch_snorm_n, batch_snorm_e) in enumerate(data_loader):
 
-        batch_x = batch_graphs.ndata['feat'].to(device)  # num x feat
+        batch_x = batch_graphs.ndata['feat'].to(device)
         batch_e = batch_graphs.edata['feat'].to(device)
         batch_snorm_e = batch_snorm_e.to(device)
         batch_targets = batch_targets.to(device)
-        batch_snorm_n = batch_snorm_n.to(device)         # num x 1
+        batch_snorm_n = batch_snorm_n.to(device)
         if flip:
             batch_graphs_eig = batch_graphs.ndata['eig'].to(device)
             sign_flip = torch.rand(batch_graphs_eig.size()).to(device)
@@ -44,6 +45,7 @@ def train_epoch(model, optimizer, device, data_loader, epoch, flip):
     return epoch_loss, epoch_train_mae, optimizer
 
 def evaluate_network(model, device, data_loader, epoch):
+
     model.eval()
     epoch_test_loss = 0
     epoch_test_mae = 0

@@ -278,10 +278,6 @@ class EIGTower(nn.Module):
 
 
 class EIGLayerTower(nn.Module):
-    """
-        Param: [in_dim, out_dim, n_heads]
-    """
-
     def __init__(self, in_dim, out_dim, aggregators, scalers, avg_d, dropout, graph_norm, batch_norm, towers=5,
                  pretrans_layers=1, posttrans_layers=1, divide_input=True, residual=False, edge_features=False,
                  edge_dim=0):

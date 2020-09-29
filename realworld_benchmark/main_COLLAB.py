@@ -42,7 +42,6 @@ from train.train_COLLAB_edge_classification import train_epoch_sparse as train_e
 """
     GPU Setup
 """
-
 def gpu_setup(use_gpu, gpu_id):
     os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
@@ -56,10 +55,6 @@ def gpu_setup(use_gpu, gpu_id):
     return device
 
 
-
-
-
-
 """
     VIEWING MODEL CONFIG AND PARAMS
 """
@@ -68,7 +63,6 @@ def view_model_param(MODEL_NAME, net_params):
     total_param = 0
     print("MODEL DETAILS:\n")
     for param in model.parameters():
-        # print(param.data.size())
         total_param += np.prod(list(param.data.size()))
     print('MODEL/Total parameters:', MODEL_NAME, total_param)
     return total_param
@@ -83,17 +77,7 @@ def train_val_pipeline(MODEL_NAME, dataset, params, net_params):
     per_epoch_time = []
 
     DATASET_NAME = dataset.name
-
-    # assert net_params['self_loop'] == False, "No self-loop support for %s dataset" % DATASET_NAME
-
-    if MODEL_NAME in ['GatedGCN']:
-        if net_params['pos_enc']:
-            print("[!] Adding graph positional encoding" ,net_params['pos_enc_dim'])
-            dataset._add_positional_encodings(net_params['pos_enc_dim'])
-            print('Time PE:' ,time.time( ) -t0)
-
     graph = dataset.graph
-
     evaluator = dataset.evaluator
 
     train_edges, val_edges, val_edges_neg, test_edges, test_edges_neg = dataset.train_edges, dataset.val_edges, dataset.val_edges_neg, dataset.test_edges, dataset.test_edges_neg
@@ -153,7 +137,6 @@ def train_val_pipeline(MODEL_NAME, dataset, params, net_params):
                               val_hits=epoch_val_hit[1], test_hits=epoch_test_hit[1])
 
                 per_epoch_time.append(time.time() - start)
-
 
                 scheduler.step(epoch_val_hit[1])
 
@@ -222,7 +205,6 @@ def main():
     parser.add_argument('--lap_norm', default='none', help='Laplacian normalisation')
     parser.add_argument('--augmentation', type=float, default=0., help='Dynamically augmenting with rotations, angle in degrees')
 
-
     # eig params
     parser.add_argument('--aggregators', type=str, help='Aggregators to use.')
     parser.add_argument('--scalers', type=str, help='Scalers to use.')
@@ -234,7 +216,6 @@ def main():
     parser.add_argument('--posttrans_layers', type=int, help='posttrans_layers.')
 
     args = parser.parse_args()
-
 
     with open(args.config) as f:
         config = json.load(f)
@@ -276,7 +257,6 @@ def main():
         params['print_epoch_interval'] = int(args.print_epoch_interval)
     if args.max_time is not None:
         params['max_time'] = float(args.max_time)
-
 
     # network parameters
     net_params = config['net_params']
@@ -336,6 +316,5 @@ def main():
 
     net_params['total_param'] = view_model_param(MODEL_NAME, net_params)
     train_val_pipeline(MODEL_NAME, dataset, params, net_params)
-
 
 main()
