@@ -101,11 +101,6 @@ def train_val_pipeline(MODEL_NAME, dataset, params, net_params):
 
     device = net_params['device']
 
-    # Write the network and optimization hyper-parameters in folder config/
-    with open(write_config_file + '.txt', 'w') as f:
-        f.write("""Dataset: {},\nModel: {}\n\nparams={}\n\nnet_params={}\n\n\nTotal Parameters: {}\n\n"""                .format
-            (DATASET_NAME, MODEL_NAME, params, net_params, net_params['total_param']))
-
     # setting seeds
     random.seed(params['seed'])
     np.random.seed(params['seed'])
