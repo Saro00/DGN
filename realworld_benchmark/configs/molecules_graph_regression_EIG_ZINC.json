@@ -1,0 +1,42 @@
+{
+  "gpu": {
+    "use": true,
+    "id": 0
+  },
+  "model": "EIG",
+  "dataset": "ZINC",
+
+  "params": {
+    "seed": 41,
+    "epochs": 1000,
+    "batch_size": 128,
+    "init_lr": 0.001,
+    "lr_reduce_factor": 0.5,
+    "lr_schedule_patience": 20,
+    "min_lr": 1e-5,
+    "weight_decay": 3e-6,
+    "print_epoch_interval": 5,
+    "max_time": 48
+  },
+  "net_params": {
+    "L": 4,
+    "hidden_dim": 45,
+    "out_dim": 45,
+    "type_net": "complex",
+    "residual": true,
+    "edge_feat": false,
+    "readout": "mean",
+    "in_feat_dropout": 0.0,
+    "dropout": 0.0,
+    "graph_norm": true,
+    "batch_norm": true,
+    "aggregators": "mean eig1-dx eig1-smooth",
+    "scalers": "identity amplification attenuation",
+    "towers": 5,
+    "divide_input_first": false,
+    "divide_input_last": true,
+    "edge_dim": 0,
+    "pretrans_layers" : 1,
+    "posttrans_layers" : 1
+  }
+}

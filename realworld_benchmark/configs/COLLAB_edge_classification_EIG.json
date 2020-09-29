@@ -1,0 +1,47 @@
+
+{
+    "gpu": {
+        "use": true,
+        "id": 1
+    },
+
+    "model": "EIG",
+    "dataset": "OGBL-COLLAB",
+
+    "params": {
+        "seed": 41,
+        "epochs": 500,
+        "batch_size": 32768,
+        "init_lr": 0.001,
+        "lr_reduce_factor": 0.5,
+        "lr_schedule_patience": 10,
+        "min_lr": 1e-5,
+        "weight_decay": 3e-6,
+        "print_epoch_interval": 1,
+        "max_time": 36
+    },
+
+    "net_params": {
+        "layer_type": "dgl",
+        "L": 3,
+        "hidden_dim": 54,
+        "out_dim": 54,
+        "type_net": "simple",
+        "residual": true,
+        "edge_feat": false,
+        "readout": "mean",
+        "in_feat_dropout": 0.0,
+        "dropout": 0.0,
+        "graph_norm": false,
+        "batch_norm": true,
+        "aggregators": "mean eig1-dx eig1-smooth",
+        "scalers": "identity",
+        "towers": 5,
+        "divide_input_first": false,
+        "divide_input_last": true,
+        "gru": false,
+        "edge_dim": 0,
+        "pretrans_layers" : 1,
+        "posttrans_layers" : 1
+    }
+}
