@@ -2,7 +2,7 @@ import torch
 from torch import nn
 from functools import partial
 
-EPS = 1e-5
+EPS = 1e-8
 
 
 def aggregate_mean(self, h, eig_s, eig_d):
@@ -33,10 +33,8 @@ def aggregate_sum(self, h, eig_s, eig_d):
 
 
 def aggregate_eig_smooth(self, h, eig_s, eig_d, eig_idx):
-    eig_s_norm = eig_s * 10000
-    eig_d_norm = eig_d * 10000
-    h_mod = torch.mul(h, (torch.abs(eig_s_norm[:, :, eig_idx] - eig_d_norm[:, :, eig_idx]) /
-                          (torch.sum(torch.abs(eig_s_norm[:, :, eig_idx] - eig_d_norm[:, :, eig_idx]), keepdim=True,
+    h_mod = torch.mul(h, (torch.abs(eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx]) /
+                          (torch.sum(torch.abs(eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx]), keepdim=True,
                                      dim=1) + EPS)).unsqueeze(-1))
     return torch.sum(h_mod, dim=1)
 
@@ -48,10 +46,8 @@ def aggregate_eig_softmax(self, h, eig_s, eig_d, eig_idx, alpha):
 
 
 def aggregate_eig_dx(self, h, eig_s, eig_d, h_in, eig_idx):
-    eig_s_norm = eig_s * 10000
-    eig_d_norm = eig_d * 10000
-    eig_w = ((eig_s_norm[:, :, eig_idx] - eig_d_norm[:, :, eig_idx]) /
-             (torch.sum(torch.abs(eig_s_norm[:, :, eig_idx] - eig_d_norm[:, :, eig_idx]), keepdim=True, dim=1) + EPS)).unsqueeze(
+    eig_w = ((eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx]) /
+             (torch.sum(torch.abs(eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx]), keepdim=True, dim=1) + EPS)).unsqueeze(
         -1)
     h_mod = torch.mul(h, eig_w)
     return torch.abs(torch.sum(h_mod, dim=1) - torch.sum(eig_w, dim=1) * h_in)
