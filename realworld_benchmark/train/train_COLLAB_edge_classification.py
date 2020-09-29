@@ -39,7 +39,7 @@ def train_epoch_sparse(model, optimizer, device, graph, train_edges, batch_size,
 
         optimizer.zero_grad()
 
-        h = model(graph, x, e, None, None)
+        h = model(graph, x, e, True, True)
 
         # Positive samples
         edge = train_edges[perm].t()
