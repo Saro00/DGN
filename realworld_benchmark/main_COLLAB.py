@@ -79,7 +79,7 @@ def view_model_param(MODEL_NAME, net_params):
     TRAINING CODE
 """
 
-def train_val_pipeline(MODEL_NAME, dataset, params, net_params, dirs):
+def train_val_pipeline(MODEL_NAME, dataset, params, net_params):
     t0 = time.time()
     per_epoch_time = []
 
@@ -99,16 +99,12 @@ def train_val_pipeline(MODEL_NAME, dataset, params, net_params, dirs):
 
     train_edges, val_edges, val_edges_neg, test_edges, test_edges_neg = dataset.train_edges, dataset.val_edges, dataset.val_edges_neg, dataset.test_edges, dataset.test_edges_neg
 
-    root_log_dir, root_ckpt_dir, write_file_name, write_config_file = dirs
     device = net_params['device']
 
     # Write the network and optimization hyper-parameters in folder config/
     with open(write_config_file + '.txt', 'w') as f:
         f.write("""Dataset: {},\nModel: {}\n\nparams={}\n\nnet_params={}\n\n\nTotal Parameters: {}\n\n"""                .format
             (DATASET_NAME, MODEL_NAME, params, net_params, net_params['total_param']))
-
-    log_dir = os.path.join(root_log_dir, "RUN_" + str(0))
-    writer = SummaryWriter(log_dir=log_dir)
 
     # setting seeds
     random.seed(params['seed'])
@@ -363,7 +359,7 @@ def main():
                                    log=torch.mean(torch.log(D + 1)))
 
     net_params['total_param'] = view_model_param(MODEL_NAME, net_params)
-    train_val_pipeline(MODEL_NAME, dataset, params, net_params, dirs)
+    train_val_pipeline(MODEL_NAME, dataset, params, net_params)
 
 
 main()

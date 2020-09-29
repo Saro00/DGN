@@ -78,7 +78,7 @@ def view_model_param(net_params):
 """
 
 
-def train_val_pipeline(MODEL_NAME, dataset, params, net_params, dirs):
+def train_val_pipeline(MODEL_NAME, dataset, params, net_params):
     start0 = time.time()
     per_epoch_time = []
 
@@ -97,7 +97,6 @@ def train_val_pipeline(MODEL_NAME, dataset, params, net_params, dirs):
 
     trainset, valset, testset = dataset.train, dataset.val, dataset.test
 
-    root_log_dir, root_ckpt_dir, write_file_name, write_config_file = dirs
     device = net_params['device']
 
     # Write network and optimization hyper-parameters in folder config/
@@ -105,8 +104,6 @@ def train_val_pipeline(MODEL_NAME, dataset, params, net_params, dirs):
         f.write("""Dataset: {},\nModel: {}\n\nparams={}\n\nnet_params={}\n\n\nTotal Parameters: {}\n\n""".format(
             DATASET_NAME, MODEL_NAME, params, net_params, net_params['total_param']))
 
-    log_dir = os.path.join(root_log_dir, "RUN_" + str(0))
-    writer = SummaryWriter(log_dir=log_dir)
 
     # setting seeds
     random.seed(params['seed'])
@@ -173,22 +170,9 @@ def train_val_pipeline(MODEL_NAME, dataset, params, net_params, dirs):
                               train_loss=epoch_train_loss, val_loss=epoch_val_loss,
                               train_acc=epoch_train_acc, val_acc=epoch_val_acc,
                               test_acc=epoch_test_acc)
-                print('')
 
                 per_epoch_time.append(time.time() - start)
 
-                # Saving checkpoint
-                ckpt_dir = os.path.join(root_ckpt_dir, "RUN_")
-                if not os.path.exists(ckpt_dir):
-                    os.makedirs(ckpt_dir)
-                torch.save(model.state_dict(), '{}.pkl'.format(ckpt_dir + "/epoch_" + str(epoch)))
-
-                files = glob.glob(ckpt_dir + '/*.pkl')
-                for file in files:
-                    epoch_nb = file.split('_')[-1]
-                    epoch_nb = int(epoch_nb.split('.')[0])
-                    if epoch_nb < epoch - 1:
-                        os.remove(file)
 
                 scheduler.step(epoch_val_loss)
 
@@ -365,7 +349,7 @@ def main():
                                log=torch.mean(torch.log(D + 1)))
 
     net_params['total_param'] = view_model_param(net_params)
-    train_val_pipeline(MODEL_NAME, dataset, params, net_params, dirs)
+    train_val_pipeline(MODEL_NAME, dataset, params, net_params)
 
 
 main()
