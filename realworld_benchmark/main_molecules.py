@@ -13,7 +13,6 @@ import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
 
-from tensorboardX import SummaryWriter
 from tqdm import tqdm
 
 
@@ -133,13 +132,6 @@ def train_val_pipeline(dataset, params, net_params):
                 epoch_train_MAEs.append(epoch_train_mae.detach().cpu().item())
                 epoch_val_MAEs.append(epoch_val_mae.detach().cpu().item())
 
-                writer.add_scalar('train/_loss', epoch_train_loss, epoch)
-                writer.add_scalar('val/_loss', epoch_val_loss, epoch)
-                writer.add_scalar('train/_mae', epoch_train_mae, epoch)
-                writer.add_scalar('val/_mae', epoch_val_mae, epoch)
-                writer.add_scalar('learning_rate', optimizer.param_groups[0]['lr'], epoch)
-
-
                 _, epoch_test_mae = evaluate_network(model, device, test_loader, epoch)
                 t.set_postfix(time=time.time() - start, lr=optimizer.param_groups[0]['lr'],
                               train_loss=epoch_train_loss, val_loss=epoch_val_loss,
@@ -179,9 +171,6 @@ def train_val_pipeline(dataset, params, net_params):
     print("Test MAE: {:.4f}".format(test_mae))
     print("TOTAL TIME TAKEN: {:.4f}s".format(time.time() - t0))
     print("AVG TIME PER EPOCH: {:.4f}s".format(np.mean(per_epoch_time)))
-
-
-    writer.close()
 
 
 def main():

@@ -19,7 +19,6 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
 
-from tensorboardX import SummaryWriter
 from tqdm import tqdm
 
 
@@ -149,22 +148,6 @@ def train_val_pipeline(MODEL_NAME, dataset, params, net_params):
                 epoch_val_hits.append(epoch_val_hit)
                 epoch_test_hits.append(epoch_test_hit)
 
-                writer.add_scalar('train/_loss', epoch_train_loss, epoch)
-
-                writer.add_scalar('train/_hits@10', epoch_train_hit[0] * 100, epoch)
-                writer.add_scalar('train/_hits@50', epoch_train_hit[1] * 100, epoch)
-                writer.add_scalar('train/_hits@100', epoch_train_hit[2] * 100, epoch)
-
-                writer.add_scalar('val/_hits@10', epoch_val_hit[0] * 100, epoch)
-                writer.add_scalar('val/_hits@50', epoch_val_hit[1] * 100, epoch)
-                writer.add_scalar('val/_hits@100', epoch_val_hit[2] * 100, epoch)
-
-                writer.add_scalar('test/_hits@10', epoch_test_hit[0] * 100, epoch)
-                writer.add_scalar('test/_hits@50', epoch_test_hit[1] * 100, epoch)
-                writer.add_scalar('test/_hits@100', epoch_test_hit[2] * 100, epoch)
-
-                writer.add_scalar('learning_rate', optimizer.param_groups[0]['lr'], epoch)
-
                 t.set_postfix(time=time.time() - start, lr=optimizer.param_groups[0]['lr'],
                               train_loss=epoch_train_loss, train_hits=epoch_train_hit[1],
                               val_hits=epoch_val_hit[1], test_hits=epoch_test_hit[1])
@@ -202,8 +185,6 @@ def train_val_pipeline(MODEL_NAME, dataset, params, net_params):
     print("Convergence Time (Epochs): {:.4f}".format(epoch))
     print("TOTAL TIME TAKEN: {:.4f}s".format(time.time() - t0))
     print("AVG TIME PER EPOCH: {:.4f}s".format(np.mean(per_epoch_time)))
-
-    writer.close()
 
 
 def main():
