@@ -1,7 +1,5 @@
 # Real-world benchmarks
 
-![plots](./image.png)
-
 ## Overview
 
 We provide the scripts for the download and execution of the real-world benchmarks we used. Most of the scripts in this directory were taken directly from or inspired by "Benchmarking GNNs" by Dwivedi _et al._ refer to their [code](https://github.com/graphdeeplearning/benchmarking-gnns) and [paper](https://arxiv.org/abs/2003.00982) for more details on their work.
@@ -12,9 +10,6 @@ We provide the scripts for the download and execution of the real-world benchmar
 - `train` contains the training scripts.
   
 All of the benchmarks use the DGL version of DGN (`../models/dgl`)
-
-## Dependencies
-
 
 ## Test run
 
@@ -90,7 +85,7 @@ python main_superpixels.py --type="complex" --lap_norm="none" --coord_eig --weig
 ```
 
 
-## Tuned hyperparameters
+### Tuned hyperparameters
 
 You can find below the scripts of the best fine-tuned DGN model for each dataset.
 
