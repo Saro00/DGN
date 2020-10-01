@@ -68,13 +68,8 @@ def view_model_param(net_params):
 def train_val_pipeline(dataset, params, net_params):
     t0 = time.time()
     per_epoch_time = []
-
-    DATASET_NAME = dataset.name
-
     trainset, valset, testset = dataset.train, dataset.val, dataset.test
-
     device = net_params['device']
-
 
     # setting seeds
     random.seed(params['seed'])
@@ -86,7 +81,6 @@ def train_val_pipeline(dataset, params, net_params):
     print("Training Graphs: ", len(trainset))
     print("Validation Graphs: ", len(valset))
     print("Test Graphs: ", len(testset))
-
 
     model = EIGNet(net_params)
     model = model.to(device)
@@ -143,8 +137,6 @@ def train_val_pipeline(dataset, params, net_params):
                     print("Max_time for training elapsed {:.2f} hours, so stopping".format(params['max_time']))
                     break
 
-
-
     except KeyboardInterrupt:
         print('-' * 89)
         print('Exiting from training early because of KeyboardInterrupt')
@@ -172,7 +164,6 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', help="Please give a config.json file with training/model/data/param details")
     parser.add_argument('--gpu_id', help="Please give a value for gpu id")
-    parser.add_argument('--model', help="Please give a value for model name")
     parser.add_argument('--dataset', help="Please give a value for dataset name")
     parser.add_argument('--seed', help="Please give a value for seed")
     parser.add_argument('--epochs', help="Please give a value for epochs")
@@ -212,7 +203,6 @@ def main():
 
     args = parser.parse_args()
 
-
     with open(args.config) as f:
         config = json.load(f)
 
@@ -221,17 +211,14 @@ def main():
         config['gpu']['id'] = int(args.gpu_id)
         config['gpu']['use'] = True
     device = gpu_setup(config['gpu']['use'], config['gpu']['id'])
-    # model, dataset
-    if args.model is not None:
-        MODEL_NAME = args.model
-    else:
-        MODEL_NAME = config['model']
+
+    # dataset
     if args.dataset is not None:
         DATASET_NAME = args.dataset
     else:
         DATASET_NAME = config['dataset']
-
     dataset = MoleculeDataset(DATASET_NAME, norm=args.lap_norm)
+
     # parameters
     params = config['params']
     if args.seed is not None:
@@ -305,6 +292,7 @@ def main():
     net_params['num_atom_type'] = dataset.num_atom_type
     net_params['num_bond_type'] = dataset.num_bond_type
 
+    # calculate logarithmic average degree for scalers
     D = torch.cat([torch.sparse.sum(g.adjacency_matrix(transpose=True), dim=-1).to_dense() for g in
                        dataset.train.graph_lists])
     net_params['avg_d'] = dict(lin=torch.mean(D),

@@ -5,55 +5,54 @@ from functools import partial
 EPS = 1e-8
 
 
-def aggregate_mean(self, h, eig_s, eig_d):
+def aggregate_mean(h, eig_s, eig_d):
     return torch.mean(h, dim=1)
 
 
-def aggregate_max(self, h, eig_s, eig_d):
+def aggregate_max(h, eig_s, eig_d):
     return torch.max(h, dim=1)[0]
 
 
-def aggregate_min(self, h, eig_s, eig_d):
+def aggregate_min(h, eig_s, eig_d):
     return torch.min(h, dim=1)[0]
 
 
-def aggregate_std(self, h, eig_s, eig_d):
-    return torch.sqrt(aggregate_var(self, h, eig_s, eig_d) + EPS)
+def aggregate_std(h, eig_s, eig_d):
+    return torch.sqrt(aggregate_var(h, eig_s, eig_d) + EPS)
 
 
-def aggregate_var(self, h, eig_s, eig_d):
+def aggregate_var(h, eig_s, eig_d):
     h_mean_squares = torch.mean(h * h, dim=-2)
     h_mean = torch.mean(h, dim=-2)
     var = torch.relu(h_mean_squares - h_mean * h_mean)
     return var
 
 
-def aggregate_sum(self, h, eig_s, eig_d):
+def aggregate_sum(h, eig_s, eig_d):
     return torch.sum(h, dim=1)
 
 
-def aggregate_eig_smooth(self, h, eig_s, eig_d, eig_idx):
+def aggregate_eig_smooth(h, eig_s, eig_d, eig_idx):
     h_mod = torch.mul(h, (torch.abs(eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx]) /
                           (torch.sum(torch.abs(eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx]), keepdim=True,
                                      dim=1) + EPS)).unsqueeze(-1))
     return torch.sum(h_mod, dim=1)
 
 
-def aggregate_eig_softmax(self, h, eig_s, eig_d, eig_idx, alpha):
+def aggregate_eig_softmax(h, eig_s, eig_d, eig_idx, alpha):
     h_mod = torch.mul(h, torch.nn.Softmax(1)(
         alpha * (torch.abs(eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx])).unsqueeze(-1)))
     return torch.sum(h_mod, dim=1)
 
 
-def aggregate_eig_dx(self, h, eig_s, eig_d, h_in, eig_idx):
+def aggregate_eig_dx(h, eig_s, eig_d, h_in, eig_idx):
     eig_w = ((eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx]) /
-             (torch.sum(torch.abs(eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx]), keepdim=True, dim=1) + EPS)).unsqueeze(
-        -1)
+             (torch.sum(torch.abs(eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx]), keepdim=True, dim=1) + EPS)).unsqueeze(-1)
     h_mod = torch.mul(h, eig_w)
     return torch.abs(torch.sum(h_mod, dim=1) - torch.sum(eig_w, dim=1) * h_in)
 
 
-def aggregate_eig_dx_no_abs(self, h, eig_s, eig_d, h_in, eig_idx):
+def aggregate_eig_dx_no_abs(h, eig_s, eig_d, h_in, eig_idx):
     eig_w = ((eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx]) /
              (torch.sum(torch.abs(eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx]), keepdim=True, dim=1) + EPS)).unsqueeze(
         -1)
@@ -61,7 +60,7 @@ def aggregate_eig_dx_no_abs(self, h, eig_s, eig_d, h_in, eig_idx):
     return torch.sum(h_mod, dim=1) - torch.sum(eig_w, dim=1) * h_in
 
 
-def aggregate_eig_dx_balanced(self, h, eig_s, eig_d, h_in, eig_idx):
+def aggregate_eig_dx_balanced(h, eig_s, eig_d, h_in, eig_idx):
     eig_front = (torch.relu(eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx]) /
                  (torch.sum(torch.abs(torch.relu(eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx])), keepdim=True,
                             dim=1) + EPS)).unsqueeze(-1)

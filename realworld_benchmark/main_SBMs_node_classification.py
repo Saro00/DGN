@@ -72,16 +72,11 @@ def view_model_param(net_params):
     TRAINING CODE
 """
 
-def train_val_pipeline(MODEL_NAME, dataset, params, net_params):
+def train_val_pipeline(dataset, params, net_params):
     start0 = time.time()
     per_epoch_time = []
-
-    DATASET_NAME = dataset.name
-
     trainset, valset, testset = dataset.train, dataset.val, dataset.test
-
     device = net_params['device']
-
 
     # setting seeds
     random.seed(params['seed'])
@@ -102,9 +97,7 @@ def train_val_pipeline(MODEL_NAME, dataset, params, net_params):
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min',
                                                      factor=params['lr_reduce_factor'],
                                                      patience=params['lr_schedule_patience'])
-
     start_epoch = 0
-
     epoch_train_losses, epoch_val_losses = [], []
     epoch_train_accs, epoch_val_accs = [], []
 
@@ -122,12 +115,7 @@ def train_val_pipeline(MODEL_NAME, dataset, params, net_params):
 
                 start = time.time()
 
-                if MODEL_NAME in ['RingGNN', '3WLGNN']:  # since different batch training function for dense GNNs
-                    epoch_train_loss, epoch_train_acc, optimizer = train_epoch(model, optimizer, device, train_loader,
-                                                                               epoch, params['batch_size'])
-                else:  # for all other models common train function
-                    epoch_train_loss, epoch_train_acc, optimizer = train_epoch(model, optimizer, device, train_loader,
-                                                                               epoch)
+                epoch_train_loss, epoch_train_acc, optimizer = train_epoch(model, optimizer, device, train_loader, epoch)
 
                 epoch_val_loss, epoch_val_acc = evaluate_network(model, device, val_loader, epoch)
                 _, epoch_test_acc = evaluate_network(model, device, test_loader, epoch)
@@ -157,7 +145,6 @@ def train_val_pipeline(MODEL_NAME, dataset, params, net_params):
                     print("Max_time for training elapsed {:.2f} hours, so stopping".format(params['max_time']))
                     break
 
-
     except KeyboardInterrupt:
         print('-' * 89)
         print('Exiting from training early because of KeyboardInterrupt')
@@ -176,7 +163,6 @@ def main():
     """
         USER CONTROLS
     """
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', help="Please give a config.json file with training/model/data/param details")
     parser.add_argument('--gpu_id', help="Please give a value for gpu id")
@@ -217,8 +203,6 @@ def main():
     parser.add_argument('--posttrans_layers', type=int, help='posttrans_layers.')
 
     args = parser.parse_args()
-
-
     with open(args.config) as f:
         config = json.load(f)
 
@@ -227,16 +211,14 @@ def main():
         config['gpu']['id'] = int(args.gpu_id)
         config['gpu']['use'] = True
     device = gpu_setup(config['gpu']['use'], config['gpu']['id'])
-    # model, dataset
-    if args.model is not None:
-        MODEL_NAME = args.model
-    else:
-        MODEL_NAME = config['model']
+
+    # dataset
     if args.dataset is not None:
         DATASET_NAME = args.dataset
     else:
         DATASET_NAME = config['dataset']
     dataset = SBMsDataset(DATASET_NAME, norm=args.lap_norm)
+
     # parameters
     params = config['params']
     if args.seed is not None:
@@ -307,18 +289,16 @@ def main():
         net_params['type_net'] = args.type_net
 
     # SBM
-
     net_params['in_dim'] = torch.unique(dataset.train[0][0].ndata['feat'], dim=0).size(0)  # node_dim (feat is an integer)
     net_params['n_classes'] = torch.unique(dataset.train[0][1], dim=0).size(0)
 
+    # calculate logarithmic average degree for scalers
     D = torch.cat([torch.sparse.sum(g.adjacency_matrix(transpose=True), dim=-1).to_dense() for g in
                    dataset.train.graph_lists])
-    net_params['avg_d'] = dict(lin=torch.mean(D),
-                               exp=torch.mean(torch.exp(torch.div(1, D)) - 1),
-                               log=torch.mean(torch.log(D + 1)))
+    net_params['avg_d'] = dict(lin=torch.mean(D), log=torch.mean(torch.log(D + 1)))
 
     net_params['total_param'] = view_model_param(net_params)
-    train_val_pipeline(MODEL_NAME, dataset, params, net_params)
+    train_val_pipeline(dataset, params, net_params)
 
 
 main()
