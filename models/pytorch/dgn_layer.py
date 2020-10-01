@@ -3,10 +3,10 @@ import torch.nn as nn
 
 from .aggregators import AGGREGATORS
 from .scalers import SCALERS
-from .layers import FCLayer, MLP
+from ..layers import FCLayer, MLP
 
 
-class EIGTower(nn.Module):
+class DGNTower(nn.Module):
     def __init__(self, in_features, out_features, aggregators, scalers, avg_d, self_loop, eigs, pretrans_layers,
                  posttrans_layers, device):
         """
@@ -15,7 +15,7 @@ class EIGTower(nn.Module):
         :param aggregators:     set of aggregation functions each taking as input X (B x N x N x Din), adj (B x N x N), self_loop and device
         :param scalers:         set of scaling functions each taking as input X (B x N x Din), adj (B x N x N) and avg_d
         """
-        super(EIGTower, self).__init__()
+        super(DGNTower, self).__init__()
         self.device = device
         self.in_features = in_features
         self.out_features = out_features
@@ -57,7 +57,7 @@ class EIGTower(nn.Module):
                + str(self.out_features) + ')'
 
 
-class EIGLayer(nn.Module):
+class DGNLayer(nn.Module):
 
     def __init__(self, in_features, out_features, aggregators, scalers, NN_eig, avg_d, eigs, towers=1, self_loop=False,
                  pretrans_layers=1, posttrans_layers=1, divide_input=True, device='cpu'):
@@ -73,7 +73,7 @@ class EIGLayer(nn.Module):
         :param divide_input:    whether the input features should be split between towers or not
         :param device:          device used for computation
         """
-        super(EIGLayer, self).__init__()
+        super(DGNLayer, self).__init__()
         assert ((not divide_input) or in_features % towers == 0), "if divide_input is set the number of towers has to divide in_features"
         assert (out_features % towers == 0), "the number of towers has to divide the out_features"
 
@@ -88,7 +88,7 @@ class EIGLayer(nn.Module):
         # convolution
         self.towers = nn.ModuleList()
         for _ in range(towers):
-            self.towers.append(EIGTower(in_features=self.input_tower, out_features=self.output_tower, aggregators=aggregators,
+            self.towers.append(DGNTower(in_features=self.input_tower, out_features=self.output_tower, aggregators=aggregators,
                                         scalers=scalers, avg_d=avg_d, self_loop=self_loop, eigs=eigs, pretrans_layers=pretrans_layers,
                                         posttrans_layers=posttrans_layers, device=device))
         # mixing network

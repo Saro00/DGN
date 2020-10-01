@@ -4,7 +4,7 @@
         "id": 0
     },
     
-    "model": "EIG",
+    "model": "DGN",
     "dataset": "SBM_PATTERN",
     
     "params": {
@@ -33,7 +33,7 @@
         "dropout": 0.0,
         "graph_norm": true,
         "batch_norm": true,
-        "aggregators": "mean eig1-dx eig2-dx",
+        "aggregators": "mean dir1-dx dir2-dx",
         "scalers": "identity amplification attenuation",
         "towers": 5,
         "divide_input_first": false,

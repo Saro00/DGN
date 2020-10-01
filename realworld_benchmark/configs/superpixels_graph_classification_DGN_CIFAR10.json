@@ -3,7 +3,7 @@
     "use": true,
     "id": 0
   },
-  "model": "EIG",
+  "model": "DGN",
   "dataset": "CIFAR10",
 
   "params": {
@@ -29,7 +29,7 @@
     "dropout": 0.3,
     "graph_norm": true,
     "batch_norm": true,
-    "aggregators": "mean eig1-dx eig2-dx",
+    "aggregators": "mean dir1-dx dir2-dx",
     "scalers": "identity",
     "towers": 5,
     "divide_input_first": true,

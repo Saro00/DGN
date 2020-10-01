@@ -3,7 +3,7 @@
     "use": true,
     "id": 0
   },
-  "model": "EIG",
+  "model": "DGN",
   "dataset": "ZINC",
 
   "params": {
@@ -30,7 +30,7 @@
     "dropout": 0.0,
     "graph_norm": true,
     "batch_norm": true,
-    "aggregators": "mean eig1-dx eig1-smooth",
+    "aggregators": "mean dir1-dx dir1-smooth",
     "scalers": "identity amplification attenuation",
     "towers": 5,
     "divide_input_first": false,

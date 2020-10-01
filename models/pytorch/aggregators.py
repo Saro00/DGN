@@ -200,8 +200,7 @@ def get_eig_adjacency(adj, eig_idx, eigvec, normalization='none', add_diag=True,
     return eig_adj
 
 
-
-def aggregate_eigs(X, adj, eigvec, eig_idx, normalization='none', add_diag=True, agg_type='derivative', normalize_L=False,
+def aggregate_dirs(X, adj, eigvec, eig_idx, normalization='none', add_diag=True, agg_type='derivative', normalize_L=False,
                    eig_acos=True, self_loop=False, device='cpu', avg_d=None):
 
     agg_type = agg_type.lower()
@@ -227,7 +226,7 @@ def aggregate_eigs(X, adj, eigvec, eig_idx, normalization='none', add_diag=True,
     return torch.cat(X_agg, dim=-1)
 
 
-eig_aggregator = partial(aggregate_eigs, normalization='row-abs', add_diag=True,
+dir_aggregator = partial(aggregate_dirs, normalization='row-abs', add_diag=True,
                         normalize_L=False, eig_acos=True)
 AGGREGATORS = {
     # Standard aggregators
@@ -247,26 +246,26 @@ AGGREGATORS = {
     'mean_amplified': aggregate_mean_amplified, 
     'mean_attenuated':aggregate_mean_attenuated,
     
-    # Eigen aggregators
-    'eig0': partial(eig_aggregator, agg_type='smoothing', eig_idx=[0]),
+    # Directional aggregators
+    'dir0': partial(dir_aggregator, agg_type='smoothing', eig_idx=[0]),
 
-    'eig1-dx': partial(eig_aggregator, agg_type='derivative', eig_idx=[1], normalization='row-abs'),
-    'eig2-dx': partial(eig_aggregator, agg_type='derivative', eig_idx=[1, 2], normalization='row-abs'),
-    'eig3-dx': partial(eig_aggregator, agg_type='derivative', eig_idx=[1, 2, 3], normalization='row-abs'),
-    'eig4-dx': partial(eig_aggregator, agg_type='derivative', eig_idx=[1, 2, 3, 4], normalization='row-abs'),
-    'eig5-dx': partial(eig_aggregator, agg_type='derivative', eig_idx=[1, 2, 3, 4, 5], normalization='row-abs'),
+    'dir1-dx': partial(dir_aggregator, agg_type='derivative', eig_idx=[1], normalization='row-abs'),
+    'dir2-dx': partial(dir_aggregator, agg_type='derivative', eig_idx=[1, 2], normalization='row-abs'),
+    'dir3-dx': partial(dir_aggregator, agg_type='derivative', eig_idx=[1, 2, 3], normalization='row-abs'),
+    'dir4-dx': partial(dir_aggregator, agg_type='derivative', eig_idx=[1, 2, 3, 4], normalization='row-abs'),
+    'dir5-dx': partial(dir_aggregator, agg_type='derivative', eig_idx=[1, 2, 3, 4, 5], normalization='row-abs'),
 
 
-    'eig1-smooth': partial(eig_aggregator, agg_type='smoothing', eig_idx=[1], normalization='row-abs'),
-    'eig2-smooth': partial(eig_aggregator, agg_type='smoothing', eig_idx=[1, 2], normalization='row-abs'),
-    'eig3-smooth': partial(eig_aggregator, agg_type='smoothing', eig_idx=[1, 2, 3], normalization='row-abs'),
-    'eig4-smooth': partial(eig_aggregator, agg_type='smoothing', eig_idx=[1, 2, 3, 4]),
-    'eig5-smooth': partial(eig_aggregator, agg_type='smoothing', eig_idx=[1, 2, 3, 4, 5]),
+    'dir1-smooth': partial(dir_aggregator, agg_type='smoothing', eig_idx=[1], normalization='row-abs'),
+    'dir2-smooth': partial(dir_aggregator, agg_type='smoothing', eig_idx=[1, 2], normalization='row-abs'),
+    'dir3-smooth': partial(dir_aggregator, agg_type='smoothing', eig_idx=[1, 2, 3], normalization='row-abs'),
+    'dir4-smooth': partial(dir_aggregator, agg_type='smoothing', eig_idx=[1, 2, 3, 4]),
+    'dir5-smooth': partial(dir_aggregator, agg_type='smoothing', eig_idx=[1, 2, 3, 4, 5]),
 
-    'eig1-both': partial(eig_aggregator, agg_type='both', eig_idx=[1]),
-    'eig2-both': partial(eig_aggregator, agg_type='both', eig_idx=[1, 2]),
-    'eig3-both': partial(eig_aggregator, agg_type='both', eig_idx=[1, 2, 3]),
-    'eig4-both': partial(eig_aggregator, agg_type='both', eig_idx=[1, 2, 3, 4]),
-    'eig4-both': partial(eig_aggregator, agg_type='both', eig_idx=[1, 2, 3, 4, 5])
+    'dir1-both': partial(dir_aggregator, agg_type='both', eig_idx=[1]),
+    'dir2-both': partial(dir_aggregator, agg_type='both', eig_idx=[1, 2]),
+    'dir3-both': partial(dir_aggregator, agg_type='both', eig_idx=[1, 2, 3]),
+    'dir4-both': partial(dir_aggregator, agg_type='both', eig_idx=[1, 2, 3, 4]),
+    'dir5-both': partial(dir_aggregator, agg_type='both', eig_idx=[1, 2, 3, 4, 5])
 
     }

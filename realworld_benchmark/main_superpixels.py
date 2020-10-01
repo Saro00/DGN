@@ -29,7 +29,7 @@ class DotDict(dict):
 """
     IMPORTING CUSTOM MODULES/METHODS
 """
-from nets.superpixels_graph_classification.eig_net import EIGNet
+from nets.superpixels_graph_classification.dgn_net import DGNNet
 from data.superpixels import SuperPixDataset  # import dataset
 from train.train_superpixels_graph_classification import train_epoch, evaluate_network
 
@@ -55,7 +55,7 @@ def gpu_setup(use_gpu, gpu_id):
 """
 
 def view_model_param(net_params):
-    model = EIGNet(net_params)
+    model = DGNNet(net_params)
     total_param = 0
     print("MODEL DETAILS:\n")
     for param in model.parameters():
@@ -85,7 +85,7 @@ def train_val_pipeline(dataset, params, net_params):
     print("Validation Graphs: ", len(valset))
     print("Test Graphs: ", len(testset))
 
-    model = EIGNet(net_params)
+    model = DGNNet(net_params)
     model = model.to(device)
 
     optimizer = optim.Adam(model.parameters(), lr=params['init_lr'], weight_decay=params['weight_decay'])

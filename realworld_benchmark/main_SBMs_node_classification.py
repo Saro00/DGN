@@ -1,24 +1,14 @@
 """
     IMPORTING LIBS
 """
-import dgl
-
 import numpy as np
 import os
-import socket
 import time
 import random
-import glob
 import argparse, json
-import pickle
-
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-
 import torch.optim as optim
 from torch.utils.data import DataLoader
-
 from tqdm import tqdm
 
 
@@ -33,7 +23,7 @@ class DotDict(dict):
 """
 
 from data.SBMs import SBMsDataset
-from nets.SBMs_node_classification.eig_net import EIGNet
+from nets.SBMs_node_classification.dgn_net import DGNNet
 from train.train_SBMs_node_classification import train_epoch_sparse as train_epoch, \
     evaluate_network_sparse as evaluate_network
 
@@ -59,7 +49,7 @@ def gpu_setup(use_gpu, gpu_id):
 """
 
 def view_model_param(net_params):
-    model = EIGNet(net_params)
+    model = DGNNet(net_params)
     total_param = 0
     print("MODEL DETAILS:\n")
     for param in model.parameters():
@@ -90,7 +80,7 @@ def train_val_pipeline(dataset, params, net_params):
     print("Test Graphs: ", len(testset))
     print("Number of Classes: ", net_params['n_classes'])
 
-    model = EIGNet(net_params)
+    model = DGNNet(net_params)
     model = model.to(device)
 
     optimizer = optim.Adam(model.parameters(), lr=params['init_lr'], weight_decay=params['weight_decay'])

@@ -48,15 +48,9 @@ class DGNLayerComplex(nn.Module):
         eig_s = nodes.mailbox['eig_s']
         eig_d = nodes.mailbox['eig_d']
         D = h.shape[-2]
-        to_cat = []
-        for aggregate in self.aggregators:
-            try:
-                to_cat.append(aggregate(self, h, eig_s, eig_d))
-            except:
-                to_cat.append(aggregate(self, h, eig_s, eig_d, h_in))
 
-        h = torch.cat(to_cat, dim=1)
-
+        # aggregators and scalers
+        h = torch.cat([aggregate(self, h, eig_s, eig_d, h_in) for aggregate in self.aggregators], dim=1)
         if len(self.scalers) > 1:
             h = torch.cat([scale(h, D=D, avg_d=self.avg_d) for scale in self.scalers], dim=1)
 
@@ -129,15 +123,9 @@ class DGNLayerSimple(nn.Module):
         eig_s = nodes.mailbox['eig_s']
         eig_d = nodes.mailbox['eig_d']
         D = h.shape[-2]
-        to_cat = []
-        for aggregate in self.aggregators:
-            try:
-                to_cat.append(aggregate(self, h, eig_s, eig_d))
-            except:
-                to_cat.append(aggregate(self, h, eig_s, eig_d, h_in))
 
-        h = torch.cat(to_cat, dim=1)
-
+        # aggregators and scalers
+        h = torch.cat([aggregate(self, h, eig_s, eig_d, h_in) for aggregate in self.aggregators], dim=1)
         if len(self.scalers) > 1:
             h = torch.cat([scale(h, D=D, avg_d=self.avg_d) for scale in self.scalers], dim=1)
 
@@ -212,15 +200,8 @@ class DGNTower(nn.Module):
         eig_d = nodes.mailbox['eig_d']
         D = h.shape[-2]
 
-        to_cat = []
-        for aggregate in self.aggregators:
-            try:
-                to_cat.append(aggregate(self, h, eig_s, eig_d))
-            except:
-                to_cat.append(aggregate(self, h, eig_s, eig_d, h_in))
-
-        h = torch.cat(to_cat, dim=1)
-
+        # aggregators and scalers
+        h = torch.cat([aggregate(self, h, eig_s, eig_d, h_in) for aggregate in self.aggregators], dim=1)
         if len(self.scalers) > 1:
             h = torch.cat([scale(h, D=D, avg_d=self.avg_d) for scale in self.scalers], dim=1)
 

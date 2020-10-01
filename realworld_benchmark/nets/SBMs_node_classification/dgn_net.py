@@ -5,7 +5,7 @@ from nets.dgn_layer import DGNLayer
 from nets.mlp_readout_layer import MLPReadout
 
 
-class EIGNet(nn.Module):
+class DGNNet(nn.Module):
     def __init__(self, net_params):
         super().__init__()
         in_dim_node = net_params['in_dim']
