@@ -1,10 +1,10 @@
-# Directional Graph Network
+# Directional Graph Networks
 
-Implementation of Directional Graph Network for Graph Nets in PyTorch and DGL.
+Implementation of Directional Graph Networks in PyTorch and DGL.
 
 ## Overview
 
-We provide the implementation of the Directional Graph Network (DGN) in PyTorch and DGL frameworks, along with scripts for running real-world benchmarks. The repository is organised as follows:
+We provide the implementation of the Directional Graph Networks (DGN) in PyTorch and DGL frameworks, along with scripts for running real-world benchmarks. The repository is organised as follows:
 
 - `models` contains:
   - `pytorch` contains the various GNN models implemented in PyTorch: the implementation of the aggregators, the scalers, the DGN layer and the directional aggregation matrix ('eigen_agg').
