@@ -50,7 +50,7 @@ class DGNLayerComplex(nn.Module):
         D = h.shape[-2]
 
         # aggregators and scalers
-        h = torch.cat([aggregate(self, h, eig_s, eig_d, h_in) for aggregate in self.aggregators], dim=1)
+        h = torch.cat([aggregate(h, eig_s, eig_d, h_in) for aggregate in self.aggregators], dim=1)
         if len(self.scalers) > 1:
             h = torch.cat([scale(h, D=D, avg_d=self.avg_d) for scale in self.scalers], dim=1)
 
@@ -125,7 +125,7 @@ class DGNLayerSimple(nn.Module):
         D = h.shape[-2]
 
         # aggregators and scalers
-        h = torch.cat([aggregate(self, h, eig_s, eig_d, h_in) for aggregate in self.aggregators], dim=1)
+        h = torch.cat([aggregate(h, eig_s, eig_d, h_in) for aggregate in self.aggregators], dim=1)
         if len(self.scalers) > 1:
             h = torch.cat([scale(h, D=D, avg_d=self.avg_d) for scale in self.scalers], dim=1)
 
@@ -201,7 +201,7 @@ class DGNTower(nn.Module):
         D = h.shape[-2]
 
         # aggregators and scalers
-        h = torch.cat([aggregate(self, h, eig_s, eig_d, h_in) for aggregate in self.aggregators], dim=1)
+        h = torch.cat([aggregate(h, eig_s, eig_d, h_in) for aggregate in self.aggregators], dim=1)
         if len(self.scalers) > 1:
             h = torch.cat([scale(h, D=D, avg_d=self.avg_d) for scale in self.scalers], dim=1)
 
