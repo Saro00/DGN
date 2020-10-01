@@ -28,16 +28,12 @@ source ~/.bash_profile    # For OSX
 ## 2. Setup Python environment for CPU
 
 ```
+
 # Clone GitHub repo
-conda install git
-git clone https://github.com/lukecavabarrett/pna.git
-cd pna
+!git clone https://github.com/Saro00/DGN
 
 # Install python environment
-conda env create -f environment_cpu.yml   
-
-# Activate environment
-conda activate benchmark_gnn
+! conda env update --name base --file DGN/realworld_benchmark/environment_cpu.yml  --prune
 ```
 
 
@@ -64,15 +60,10 @@ sudo reboot
 cat /usr/local/cuda/version.txt # Check CUDA version is 10.0
 
 # Clone GitHub repo
-conda install git
-git clone https://github.com/lukecavabarrett/pna.git
-cd pna
+!git clone https://github.com/Saro00/DGN
 
 # Install python environment
-conda env create -f environment_gpu.yml 
-
-# Activate environment
-conda activate benchmark_gnn
+! conda env update --name base --file DGN/realworld_benchmark/environment_gpu.yml  --prune
 ```
 
 
@@ -93,15 +84,10 @@ sudo reboot
 cat /usr/local/cuda/version.txt # Check CUDA version is 10.0
 
 # Clone GitHub repo
-conda install git
-git clone https://github.com/lukecavabarrett/pna.git
-cd pna
+!git clone https://github.com/Saro00/DGN
 
 # Install python environment
-conda env create -f environment_gpu.yml 
-
-# Activate environment
-conda activate benchmark_gnn
+! conda env update --name base --file DGN/realworld_benchmark/environment_gpu.yml  --prune
 ```
 <br>
 
@@ -109,23 +95,16 @@ conda activate benchmark_gnn
 
 ```
 # Install miniconda
-import os, sys
 ! wget https://repo.anaconda.com/miniconda/Miniconda3-py37_4.8.2-Linux-x86_64.sh
 ! chmod +x Miniconda3-py37_4.8.2-Linux-x86_64.sh
 ! bash ./Miniconda3-py37_4.8.2-Linux-x86_64.sh -b -f -p /usr/local
 ! PATH=${PATH}:/usr/local/lib/python3.7/site-packages/
-sys.path.append('/usr/local/lib/python3.7/site-packages/')
 
 # Clone GitHub repo
-!git clone https://github.com/Saro00/pna
+!git clone https://github.com/Saro00/DGN
 
 # Install python environment
-! conda env update --name base --file pna/realworld_benchmark/environment_colab.yml  --prune
-
-# Download dataset
-os.chdir('pna/realworld_benchmark/data')
-
-os.chdir('..')
+! conda env update --name base --file DGN/realworld_benchmark/environment_gpu.yml  --prune
 ```
 
 
