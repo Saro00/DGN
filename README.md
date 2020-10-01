@@ -14,15 +14,5 @@ We provide the implementation of the Directional Graph Network (DGN) in PyTorch 
 - `realworld_benchmark` contains various scripts from [Benchmarking GNNs](https://github.com/graphdeeplearning/benchmarking-gnns) to download the real-world benchmarks and train the DGN on them. In `real_world/README.md` we provide instructions for runnning the experiments.
 
 
-## Reference
-```
-@article{corso2020principal,
-  title={Principal Neighbourhood Aggregation for Graph Nets},
-  author={Corso, Gabriele and Cavalleri, Luca and Beaini, Dominique and Lio, Pietro and Velickovic, Petar},
-  journal={arXiv preprint arXiv:2004.05718},
-  year={2020}
-}
-```
-
 ## License
 MIT
