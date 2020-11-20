@@ -13,7 +13,7 @@ import math
 
 from .metrics import accuracy_MNIST_CIFAR as accuracy
 
-def train_epoch(model, optimizer, device, data_loader, epoch, augmentation, flip):
+def train_epoch(model, optimizer, device, data_loader, epoch, augmentation, flip, distortion):
     model.train()
     epoch_loss = 0
     epoch_train_acc = 0
@@ -41,6 +41,12 @@ def train_epoch(model, optimizer, device, data_loader, epoch, augmentation, flip
             sign_flip[sign_flip >= 0.5] = 1.0; sign_flip[sign_flip < 0.5] = -1.0
             batch_graphs.ndata['eig'][:, 2] = torch.mul(sign_flip, batch_graphs_eig)
 
+        if distortion > 1e-7:
+            batch_graphs_eig = batch_graphs.ndata['eig'].clone()
+            dist = (torch.rand(batch_x[:, 0].shape) - 0.5) * 2 * distortion
+            batch_graphs.ndata['eig'][:, 1] = torch.mul(dist, torch.mean(torch.abs(batch_graphs_eig[:, 1]), dim=-1, keepdim=True)) + batch_graphs_eig[:, 1]
+            batch_graphs.ndata['eig'][:, 2] = torch.mul(dist, torch.mean(torch.abs(batch_graphs_eig[:, 2]), dim=-1, keepdim=True)) + batch_graphs_eig
+
         optimizer.zero_grad()
         batch_scores = model.forward(batch_graphs, batch_x, batch_e, batch_snorm_n, batch_snorm_e)
         loss = model.loss(batch_scores, batch_labels)
@@ -49,7 +55,7 @@ def train_epoch(model, optimizer, device, data_loader, epoch, augmentation, flip
         epoch_loss += loss.detach().item()
         epoch_train_acc += accuracy(batch_scores, batch_labels)
         nb_data += batch_labels.size(0)
-        if augmentation  > 1e-7:
+        if augmentation  > 1e-7 or distortion > 1e-7:
             batch_graphs.ndata['eig'] = batch_graphs_eig.detach()
     epoch_loss /= (iter + 1)
     epoch_train_acc /= nb_data

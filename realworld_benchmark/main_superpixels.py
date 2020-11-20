@@ -113,7 +113,7 @@ def train_val_pipeline(dataset, params, net_params):
                 start = time.time()
 
                 epoch_train_loss, epoch_train_acc, optimizer = train_epoch(model, optimizer, device, train_loader,
-                                                                           epoch, net_params['augmentation'], net_params['flip'])
+                                                                           epoch, net_params['augmentation'], net_params['flip'], net_params['distortion'])
                 epoch_val_loss, epoch_val_acc = evaluate_network(model, device, val_loader, epoch)
 
                 epoch_train_losses.append(epoch_train_loss)
@@ -189,6 +189,7 @@ def main():
     parser.add_argument('--type_net', default='simple', help='Type of net')
     parser.add_argument('--lap_norm', default='none', help='Laplacian normalisation')
     parser.add_argument('--augmentation', type=float, default=0., help='Dynamically augmenting with rotations, angle in degrees')
+    parser.add_argument('--distortion', type=float, default=0., help='Distortion of the vector field')
     parser.add_argument('--proportion', type=float, default=1., help='Proportion of the dataset to use')
     parser.add_argument('--flip', action='store_true', default=False, help='Flip x-axis')
 
@@ -288,6 +289,8 @@ def main():
         net_params['posttrans_layers'] = args.posttrans_layers
     if args.type_net is not None:
         net_params['type_net'] = args.type_net
+    if args.distortion is not None:
+        net_params['distortion'] = args.distortion
     if args.augmentation is not None:
         net_params['augmentation'] = args.augmentation
     if args.flip is not None:
