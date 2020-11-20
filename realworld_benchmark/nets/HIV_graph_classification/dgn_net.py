@@ -69,8 +69,6 @@ class DGNNet(nn.Module):
 
         for i, conv in enumerate(self.layers):
             h_t = conv(g, h, e, snorm_n)
-            if self.gru_enable and i != len(self.layers) - 1:
-                h_t = self.gru(h, h_t)
             h = h_t
 
         g.ndata['h'] = h
