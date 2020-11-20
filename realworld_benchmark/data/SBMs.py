@@ -141,7 +141,7 @@ def positional_encoding(g, pos_enc_dim, norm):
 
 class SBMsDataset(torch.utils.data.Dataset):
 
-    def __init__(self, name, norm='none', verbose=True):
+    def __init__(self, name, pos_enc_dim=0, norm='none', verbose=True):
         """
             Loading SBM datasets
         """
@@ -155,7 +155,9 @@ class SBMsDataset(torch.utils.data.Dataset):
             self.train = f[0]
             self.val = f[1]
             self.test = f[2]
-        self._add_positional_encodings(5, norm=norm)
+        self._add_eig(5, norm=norm)
+        if pos_enc_dim > 0:
+            self._add_pos_enc(pos_enc_dim)
         if verbose:
             print('train, test, val sizes :', len(self.train), len(self.test), len(self.val))
             print("[I] Finished loading.")
@@ -231,9 +233,17 @@ class SBMsDataset(torch.utils.data.Dataset):
         self.val.graph_lists = [self_loop(g) for g in self.val.graph_lists]
         self.test.graph_lists = [self_loop(g) for g in self.test.graph_lists]
 
-    def _add_positional_encodings(self, pos_enc_dim, norm):
+    def _add_eig(self, pos_enc_dim, norm):
 
         # Graph positional encoding v/ Laplacian eigenvectors
         self.train.graph_lists = [positional_encoding(g, pos_enc_dim, norm) for g in self.train.graph_lists]
         self.val.graph_lists = [positional_encoding(g, pos_enc_dim, norm) for g in self.val.graph_lists]
         self.test.graph_lists = [positional_encoding(g, pos_enc_dim, norm) for g in self.test.graph_lists]
+
+    def _add_pos_enc(self, pos_enc_dim):
+        for g in self.train.graph_lists:
+            g.ndata['pos_enc'] = g.ndata['eig'][:,1:pos_enc_dim+1]
+        for g in self.val.graph_lists:
+            g.ndata['pos_enc'] = g.ndata['eig'][:, 1:pos_enc_dim + 1]
+        for g in self.test.graph_lists:
+            g.ndata['pos_enc'] = g.ndata['eig'][:, 1:pos_enc_dim + 1]

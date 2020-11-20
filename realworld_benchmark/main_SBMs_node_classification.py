@@ -191,6 +191,7 @@ def main():
     parser.add_argument('--edge_dim', type=int, help='Size of edge embeddings.')
     parser.add_argument('--pretrans_layers', type=int, help='pretrans_layers.')
     parser.add_argument('--posttrans_layers', type=int, help='posttrans_layers.')
+    parser.add_argument('--pos_enc_dim', default=0, type=int, help='Positional encoding dimension')
 
     args = parser.parse_args()
     with open(args.config) as f:
@@ -207,7 +208,7 @@ def main():
         DATASET_NAME = args.dataset
     else:
         DATASET_NAME = config['dataset']
-    dataset = SBMsDataset(DATASET_NAME, norm=args.lap_norm)
+    dataset = SBMsDataset(DATASET_NAME, pos_enc_dim=int(args.pos_enc_dim), norm=args.lap_norm)
 
     # parameters
     params = config['params']
@@ -277,6 +278,8 @@ def main():
         net_params['posttrans_layers'] = args.posttrans_layers
     if args.type_net is not None:
         net_params['type_net'] = args.type_net
+    if args.pos_enc_dim is not None:
+        net_params['pos_enc_dim'] = args.pos_enc_dim
 
     # SBM
     net_params['in_dim'] = torch.unique(dataset.train[0][0].ndata['feat'], dim=0).size(0)  # node_dim (feat is an integer)
