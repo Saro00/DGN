@@ -1,0 +1,42 @@
+{
+  "gpu": {
+    "use": true,
+    "id": 0
+  },
+  "model": "DGN",
+  "dataset": "HIV",
+
+  "params": {
+    "seed": 41,
+    "epochs": 200,
+    "batch_size": 128,
+    "init_lr": 0.01,
+    "lr_reduce_factor": 0.5,
+    "lr_schedule_patience": 20,
+    "min_lr": 1e-4,
+    "weight_decay": 3e-6,
+    "print_epoch_interval": 5,
+    "max_time": 48
+  },
+  "net_params": {
+    "L": 4,
+    "hidden_dim": 70,
+    "out_dim": 70,
+    "type_net": "simple",
+    "residual": true,
+    "edge_feat": false,
+    "readout": "mean",
+    "in_feat_dropout": 0.0,
+    "dropout": 0.3,
+    "graph_norm": false,
+    "batch_norm": true,
+    "aggregators": "mean max min dir1-dx dir1-av",
+    "scalers": "identity",
+    "towers": 5,
+    "divide_input_first": false,
+    "divide_input_last": true,
+    "edge_dim": 0,
+    "pretrans_layers" : 1,
+    "posttrans_layers" : 1
+  }
+}
