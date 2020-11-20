@@ -191,7 +191,7 @@ def main():
     parser.add_argument('--flip', action='store_true', default=False, help='Flip eig each epoch')
 
 
-    # eig params
+    # dgn params
     parser.add_argument('--aggregators', type=str, help='Aggregators to use.')
     parser.add_argument('--scalers', type=str, help='Scalers to use.')
     parser.add_argument('--towers', type=int, default=5, help='Towers to use.')
@@ -200,6 +200,7 @@ def main():
     parser.add_argument('--edge_dim', type=int, help='Size of edge embeddings.')
     parser.add_argument('--pretrans_layers', type=int, help='pretrans_layers.')
     parser.add_argument('--posttrans_layers', type=int, help='posttrans_layers.')
+    parser.add_argument('--pos_enc_dim', default=0, type=int, help='Positional encoding dimension')
 
     args = parser.parse_args()
 
@@ -217,7 +218,8 @@ def main():
         DATASET_NAME = args.dataset
     else:
         DATASET_NAME = config['dataset']
-    dataset = MoleculeDataset(DATASET_NAME, norm=args.lap_norm)
+
+    dataset = MoleculeDataset(DATASET_NAME, pos_enc_dim=int(args.pos_enc_dim), norm=args.lap_norm)
 
     # parameters
     params = config['params']
@@ -287,6 +289,8 @@ def main():
         net_params['type_net'] = args.type_net
     if args.flip is not None:
         net_params['flip'] = args.flip
+    if args.pos_enc_dim is not None:
+        net_params['pos_enc_dim'] = args.pos_enc_dim
 
     # ZINC
     net_params['num_atom_type'] = dataset.num_atom_type
