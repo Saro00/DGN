@@ -1,5 +1,7 @@
 # Real-world benchmarks
 
+![comparison_table](images/comparison_table.png)
+
 ## Overview
 
 We provide the scripts for the download and execution of the real-world benchmarks we used. Many scripts in this directory were taken directly from or inspired by "Benchmarking GNNs" by Dwivedi _et al._ refer to their [code](https://github.com/graphdeeplearning/benchmarking-gnns) and [paper](https://arxiv.org/abs/2003.00982) for more details on their work.
@@ -26,6 +28,8 @@ python { main_molecules.py | main_SBMs_node_classification.py | main_molecules.p
 ```
 
 ### Fair comparison
+
+![results_table](images/results_table.png)
 
 You can find below the scripts used to run the fair comparison between the DGN models. 
 
@@ -84,12 +88,12 @@ python main_superpixels.py --type="complex" --lap_norm="none" --coord_eig --weig
 
 # MolHIV
 # simple
-python -m main_HIV --weight_decay=3e-6 --L=4 --type_net="simple" --hidden_dim=145 --out_dim=145 --residual=True --edge_feat=False --readout=mean --in_feat_dropout=0.0 --dropout=0.3 --graph_norm=False --batch_norm=True --aggregators="mean" --scalers="identity" --dataset HIV --gpu_id 0 --config "configs/molecules_graph_regression_pna_ZINC.json" --epochs=200 --init_lr=0.01 --lr_reduce_factor=0.5 --lr_schedule_patience=20 --min_lr=0.0001
-python -m main_HIV --weight_decay=3e-6 --L=4 --type_net="simple" --hidden_dim=100 --out_dim=100 --residual=True --edge_feat=False --readout=mean --in_feat_dropout=0.0 --dropout=0.3 --graph_norm=False --batch_norm=True --aggregators="mean dir1-dx" --scalers="identity" --dataset HIV --gpu_id 0 --config "configs/molecules_graph_regression_pna_ZINC.json" --epochs=200 --init_lr=0.01 --lr_reduce_factor=0.5 --lr_schedule_patience=20 --min_lr=0.0001
-python -m main_HIV --weight_decay=3e-6 --L=4 --type_net="simple" --hidden_dim=90 --out_dim=90 --residual=True --edge_feat=False --readout=mean --in_feat_dropout=0.0 --dropout=0.3 --graph_norm=False --batch_norm=True --aggregators="mean dir1-dx dir2-dx" --scalers="identity" --dataset HIV --gpu_id 0 --config "configs/molecules_graph_regression_pna_ZINC.json" --epochs=200 --init_lr=0.01 --lr_reduce_factor=0.5 --lr_schedule_patience=20 --min_lr=0.0001
-python -m main_HIV --weight_decay=3e-6 --L=4 --type_net="simple" --hidden_dim=100 --out_dim=100 --residual=True --edge_feat=False --readout=mean --in_feat_dropout=0.0 --dropout=0.3 --graph_norm=False --batch_norm=True --aggregators="mean dir1-av" --scalers="identity" --dataset HIV --gpu_id 0 --config "configs/molecules_graph_regression_pna_ZINC.json" --epochs=200 --init_lr=0.01 --lr_reduce_factor=0.5 --lr_schedule_patience=20 --min_lr=0.0001
-python -m main_HIV --weight_decay=3e-6 --L=4 --type_net="simple" --hidden_dim=90 --out_dim=90 --residual=True --edge_feat=False --readout=mean --in_feat_dropout=0.0 --dropout=0.3 --graph_norm=False --batch_norm=True --aggregators="mean dir1-av dir2-av" --scalers="identity" --dataset HIV --gpu_id 0 --config "configs/molecules_graph_regression_pna_ZINC.json" --epochs=200 --init_lr=0.01 --lr_reduce_factor=0.5 --lr_schedule_patience=20 --min_lr=0.001
-python -m main_HIV --weight_decay=3e-6 --L=4 --type_net="simple" --hidden_dim=90 --out_dim=90 --residual=True --edge_feat=False --readout=mean --in_feat_dropout=0.0 --dropout=0.3 --graph_norm=False --batch_norm=True --aggregators="mean dir1-av dir1-dx" --scalers="identity" --dataset HIV --gpu_id 0 --config "configs/molecules_graph_regression_pna_ZINC.json" --epochs=200 --init_lr=0.01 --lr_reduce_factor=0.5 --lr_schedule_patience=20 --min_lr=0.001
+python -m main_HIV --weight_decay=3e-6 --L=4 --type_net="simple" --hidden_dim=145 --out_dim=145 --residual=True --edge_feat=False --readout=mean --in_feat_dropout=0.0 --dropout=0.3 --graph_norm=False --batch_norm=True --aggregators="mean" --scalers="identity" --dataset HIV --gpu_id 0 --config "configs/molecules_graph_regression_DGN_HIV.json" --epochs=200 --init_lr=0.01 --lr_reduce_factor=0.5 --lr_schedule_patience=20 --min_lr=0.0001
+python -m main_HIV --weight_decay=3e-6 --L=4 --type_net="simple" --hidden_dim=100 --out_dim=100 --residual=True --edge_feat=False --readout=mean --in_feat_dropout=0.0 --dropout=0.3 --graph_norm=False --batch_norm=True --aggregators="mean dir1-dx" --scalers="identity" --dataset HIV --gpu_id 0 --config "configs/molecules_graph_regression_DGN_HIV.json" --epochs=200 --init_lr=0.01 --lr_reduce_factor=0.5 --lr_schedule_patience=20 --min_lr=0.0001
+python -m main_HIV --weight_decay=3e-6 --L=4 --type_net="simple" --hidden_dim=90 --out_dim=90 --residual=True --edge_feat=False --readout=mean --in_feat_dropout=0.0 --dropout=0.3 --graph_norm=False --batch_norm=True --aggregators="mean dir1-dx dir2-dx" --scalers="identity" --dataset HIV --gpu_id 0 --config "configs/molecules_graph_regression_DGN_HIV.json" --epochs=200 --init_lr=0.01 --lr_reduce_factor=0.5 --lr_schedule_patience=20 --min_lr=0.0001
+python -m main_HIV --weight_decay=3e-6 --L=4 --type_net="simple" --hidden_dim=100 --out_dim=100 --residual=True --edge_feat=False --readout=mean --in_feat_dropout=0.0 --dropout=0.3 --graph_norm=False --batch_norm=True --aggregators="mean dir1-av" --scalers="identity" --dataset HIV --gpu_id 0 --config "configs/molecules_graph_regression_DGN_HIV.json" --epochs=200 --init_lr=0.01 --lr_reduce_factor=0.5 --lr_schedule_patience=20 --min_lr=0.0001
+python -m main_HIV --weight_decay=3e-6 --L=4 --type_net="simple" --hidden_dim=90 --out_dim=90 --residual=True --edge_feat=False --readout=mean --in_feat_dropout=0.0 --dropout=0.3 --graph_norm=False --batch_norm=True --aggregators="mean dir1-av dir2-av" --scalers="identity" --dataset HIV --gpu_id 0 --config "configs/molecules_graph_regression_DGN_HIV.json" --epochs=200 --init_lr=0.01 --lr_reduce_factor=0.5 --lr_schedule_patience=20 --min_lr=0.001
+python -m main_HIV --weight_decay=3e-6 --L=4 --type_net="simple" --hidden_dim=90 --out_dim=90 --residual=True --edge_feat=False --readout=mean --in_feat_dropout=0.0 --dropout=0.3 --graph_norm=False --batch_norm=True --aggregators="mean dir1-av dir1-dx" --scalers="identity" --dataset HIV --gpu_id 0 --config "configs/molecules_graph_regression_DGN_HIV.json" --epochs=200 --init_lr=0.01 --lr_reduce_factor=0.5 --lr_schedule_patience=20 --min_lr=0.001
 ```
 
 
