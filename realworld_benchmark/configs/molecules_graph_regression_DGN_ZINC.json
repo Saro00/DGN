@@ -30,7 +30,7 @@
     "dropout": 0.0,
     "graph_norm": true,
     "batch_norm": true,
-    "aggregators": "mean dir1-dx dir1-smooth",
+    "aggregators": "mean dir1-dx dir1-av",
     "scalers": "identity amplification attenuation",
     "towers": 5,
     "divide_input_first": false,
