@@ -32,7 +32,7 @@ def aggregate_sum(h, eig_s, eig_d, h_in):
     return torch.sum(h, dim=1)
 
 
-def aggregate_dir_smooth(h, eig_s, eig_d, h_in, eig_idx):
+def aggregate_dir_av(h, eig_s, eig_d, h_in, eig_idx):
     h_mod = torch.mul(h, (torch.abs(eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx]) /
                           (torch.sum(torch.abs(eig_s[:, :, eig_idx] - eig_d[:, :, eig_idx]), keepdim=True,
                                      dim=1) + EPS)).unsqueeze(-1))
@@ -73,9 +73,9 @@ def aggregate_dir_dx_balanced(h, eig_s, eig_d, h_in, eig_idx):
 
 AGGREGATORS = {'mean': aggregate_mean, 'sum': aggregate_sum, 'max': aggregate_max, 'min': aggregate_min,
                'std': aggregate_std, 'var': aggregate_var,
-               'dir1-smooth': partial(aggregate_dir_smooth, eig_idx=1),
-               'dir2-smooth': partial(aggregate_dir_smooth, eig_idx=2),
-               'dir3-smooth': partial(aggregate_dir_smooth, eig_idx=3),
+               'dir1-av': partial(aggregate_dir_av, eig_idx=1),
+               'dir2-av': partial(aggregate_dir_av, eig_idx=2),
+               'dir3-av': partial(aggregate_dir_av, eig_idx=3),
                'dir1-0.1': partial(aggregate_dir_softmax, eig_idx=1, alpha=0.1),
                'dir2-0.1': partial(aggregate_dir_softmax, eig_idx=2, alpha=0.1),
                'dir3-0.1': partial(aggregate_dir_softmax, eig_idx=3, alpha=0.1),
