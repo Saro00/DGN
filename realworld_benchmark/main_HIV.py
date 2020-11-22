@@ -70,7 +70,7 @@ def view_model_param(net_params):
 """
 
 
-def train_val_pipeline(dataset, params, net_params, dirs):
+def train_val_pipeline(dataset, params, net_params):
     t0 = time.time()
     per_epoch_time = []
 
@@ -79,16 +79,7 @@ def train_val_pipeline(dataset, params, net_params, dirs):
 
     trainset, valset, testset = dataset.train, dataset.val, dataset.test
 
-    root_log_dir, root_ckpt_dir, write_file_name, write_config_file = dirs
     device = net_params['device']
-
-    # Write the network and optimization hyper-parameters in folder config/
-    with open(write_config_file + '.txt', 'w') as f:
-        f.write("""Dataset: {},\nModel: {}\n\nparams={}\n\nnet_params={}\n\n\nTotal Parameters: {}\n\n""".format(
-            DATASET_NAME, MODEL_NAME, params, net_params, net_params['total_param']))
-
-    log_dir = os.path.join(root_log_dir, "RUN_" + str(0))
-    writer = SummaryWriter(log_dir=log_dir)
 
     # setting seeds
     random.seed(params['seed'])
@@ -137,12 +128,6 @@ def train_val_pipeline(dataset, params, net_params, dirs):
                 epoch_val_losses.append(epoch_val_loss)
                 epoch_train_ROCs.append(epoch_train_roc.item())
                 epoch_val_ROCs.append(epoch_val_roc.item())
-
-                writer.add_scalar('train/_loss', epoch_train_loss, epoch)
-                writer.add_scalar('val/_loss', epoch_val_loss, epoch)
-                writer.add_scalar('train/_roc', epoch_train_roc, epoch)
-                writer.add_scalar('val/_roc', epoch_val_roc, epoch)
-                writer.add_scalar('learning_rate', optimizer.param_groups[0]['lr'], epoch)
 
 
                 _, epoch_test_roc = evaluate_network(model, device, test_loader, epoch)
@@ -193,19 +178,6 @@ def train_val_pipeline(dataset, params, net_params, dirs):
     print("AVG TIME PER EPOCH: {:.4f}s".format(np.mean(per_epoch_time)))
 
 
-    writer.close()
-
-    """
-        Write the results in out_dir/results folder
-    """
-    with open(write_file_name + '.txt', 'w') as f:
-        f.write("""Dataset: {},\nModel: {}\n\nparams={}\n\nnet_params={}\n\n{}\n\nTotal Parameters: {}\n\n
-    FINAL RESULTS\nTEST ROC of Best Val: {:.4f}\nBest TRAIN ROC: {:.4f}\nTRAIN ROC of Best Val: {:.4f}\nBest VAL ROC: {:.4f}\n\n
-    Total Time Taken: {:.4f} hrs\nAverage Time Per Epoch: {:.4f} s\n\n\n""" \
-                .format(DATASET_NAME, MODEL_NAME, params, net_params, model, net_params['total_param'],
-                        best_val_test_roc, best_train_roc, best_val_train_roc, best_val_roc, (time.time() - t0) / 3600,
-                        np.mean(per_epoch_time)))
-
 
 def main():
     """
@@ -252,7 +224,6 @@ def main():
     parser.add_argument('--pos_enc_dim', default=0, type=int, help='Positional encoding dimension')
 
     args = parser.parse_args()
-    print(args.config)
 
     with open(args.config) as f:
         config = json.load(f)
@@ -345,7 +316,7 @@ def main():
                                    log=torch.mean(torch.log(D + 1)))
 
     net_params['total_param'] = view_model_param(net_params)
-    train_val_pipeline(dataset, params, net_params, dirs)
+    train_val_pipeline(dataset, params, net_params)
 
 
 main()
