@@ -1,6 +1,5 @@
 import torch.nn as nn
 import dgl
-from nets.gru import GRU
 from nets.dgn_layer import DGNLayer, VirtualNode
 from nets.mlp_readout_layer import MLPReadout
 import torch
