@@ -6,6 +6,47 @@ import torch.nn.functional as F
 from .aggregators import AGGREGATORS
 from .layers import MLP, FCLayer
 from .scalers import SCALERS
+from dgl.nn.pytorch.glob import mean_nodes, sum_nodes
+
+
+class VirtualNode(nn.Module):
+    def __init__(self, dim, dropout, batch_norm=False, bias=True, residual=True, vn_type='mean'):
+        super().__init__()
+        self.vn_type = vn_type.lower()
+        self.fc_layer = FCLayer(in_size=dim, out_size=dim, activation='relu', dropout=dropout,
+                                b_norm=batch_norm, bias=bias)
+        self.residual = residual
+
+    def forward(self, g, h, vn_h):
+
+        g.ndata['h'] = h
+
+        # Pool the features
+        if self.vn_type == 'mean':
+            pool = mean_nodes(g, 'h')
+        elif self.vn_type == 'sum':
+            pool = sum_nodes(g, 'h')
+        elif self.vn_type == 'logsum':
+            pool = mean_nodes(g, 'h')
+            lognum = torch.log(torch.tensor(g.batch_num_nodes, dtype=h.dtype, device=h.device))
+            pool = pool * lognum.unsqueeze(-1)
+        else:
+            raise ValueError(f'Undefined input "{self.pooling}". Accepted values are "sum", "mean", "logsum"')
+
+        # Compute the new virtual node features
+        vn_h_temp = self.fc_layer.forward(vn_h + pool)
+        if self.residual:
+            vn_h = vn_h + vn_h_temp
+        else:
+            vn_h = vn_h_temp
+
+        # Add the virtual node value to the graph features
+        temp_h = torch.cat(
+            [vn_h[ii:ii + 1].repeat(num_nodes, 1) for ii, num_nodes in enumerate(g.batch_num_nodes)],
+            dim=0)
+        h = h + temp_h
+
+        return vn_h, h
 
 
 class DGNLayerComplex(nn.Module):
