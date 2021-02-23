@@ -121,7 +121,11 @@ You can find below the scripts of the best fine-tuned DGN model for each dataset
 ```
 # ZINC
 
+100k parameters:
 python main_molecules.py --type="towers" --lap_norm="none" --weight_decay=3e-7 --L=4 --hidden_dim=75 --out_dim=70 --residual=True --edge_feat=True --edge_dim=10 --readout=sum --in_feat_dropout=0.0 --dropout=0.0 --graph_norm=True --batch_norm=True --aggregators="mean dir1-dx max min" --scalers="identity amplification attenuation" --towers=5 --divide_input_first=False --divide_input_last=True  --dataset ZINC --gpu_id 0 --config "configs/molecules_graph_regression_DGN_ZINC.json" --lr_schedule_patience=20
+
+500k parameters:
+python main_molecules.py --type="complex" --batch_size=128 --lap_norm="none" --weight_decay=3e-6 --L=4 --hidden_dim=285 --out_dim=285 --residual=True --edge_feat=True --edge_dim=10 --readout=sum --in_feat_dropout=0.0 --dropout=0.05 --graph_norm=True --batch_norm=True --aggregators="mean eig1-dx max min" --scalers="identity amplification attenuation" --towers=5 --divide_input_first=False --divide_input_last=True --dataset ZINC --gpu_id 0 --config "configs/molecules_graph_regression_DGN_ZINC.json" --lr_schedule_patience=25
 
 # CIFAR10
 
